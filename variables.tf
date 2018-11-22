@@ -169,7 +169,7 @@ variable "forward_header_values" {
   default     = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 }
 
-variabke "trusted_signers_ids" {
+variable "trusted_signer_ids" {
   type        = "list"
    description = "A list of AWS account IDs that are authorized to generate signed URLs"
    default = []
