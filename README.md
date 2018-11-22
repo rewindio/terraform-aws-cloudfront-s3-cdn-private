@@ -124,11 +124,6 @@ Available targets:
 | geo_restriction_locations | List of country codes for which  CloudFront either to distribute content (whitelist) or not distribute your content (blacklist) | list | `<list>` | no |
 | geo_restriction_type | Method that use to restrict distribution of your content by country: `none`, `whitelist`, or `blacklist` | string | `none` | no |
 | is_ipv6_enabled | State of CloudFront IPv6 | string | `true` | no |
-| log_expiration_days | Number of days after which to expunge the objects | string | `90` | no |
-| log_glacier_transition_days | Number of days after which to move the data to the glacier storage tier | string | `60` | no |
-| log_include_cookies | Include cookies in access logs | string | `false` | no |
-| log_prefix | Path of logs in S3 bucket | string | `` | no |
-| log_standard_transition_days | Number of days to persist in the standard storage tier before moving to the glacier tier | string | `30` | no |
 | max_ttl | Maximum amount of time (in seconds) that an object is in a CloudFront cache | string | `31536000` | no |
 | min_ttl | Minimum amount of time that you want objects to stay in CloudFront caches | string | `0` | no |
 | minimum_protocol_version | Cloudfront TLS minimum protocol version | string | `TLSv1` | no |
@@ -176,8 +171,6 @@ Are you using this project or any of our other projects? Consider [leaving a tes
 Check out these related projects.
 
 - [terraform-aws-cloudfront-cdn](https://github.com/cloudposse/terraform-aws-cloudfront-cdn) - Terraform Module that implements a CloudFront Distribution (CDN) for a custom origin.
-- [terraform-aws-s3-log-storage](https://github.com/cloudposse/terraform-aws-s3-log-storage) - S3 bucket with built in IAM policy to allow CloudTrail logs
-
 
 
 ## Help
