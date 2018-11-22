@@ -169,6 +169,12 @@ variable "forward_header_values" {
   default     = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 }
 
+variabke "trusted_signers_ids" {
+  type        = "list"
+   description = "A list of AWS account IDs that are authorized to generate signed URLs"
+   default = []
+}
+
 variable "price_class" {
   default     = "PriceClass_100"
   description = "Price class for this distribution: `PriceClass_All`, `PriceClass_200`, `PriceClass_100`"

@@ -149,6 +149,8 @@ resource "aws_cloudfront_distribution" "default" {
       }
     }
 
+    trusted_signers = [ "${var.trusted_signer_ids}" ]
+
     viewer_protocol_policy = "${var.viewer_protocol_policy}"
     default_ttl            = "${var.default_ttl}"
     min_ttl                = "${var.min_ttl}"
