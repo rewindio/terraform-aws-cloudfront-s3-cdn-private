@@ -99,6 +99,11 @@ variable "comment" {
   description = "Comment for the origin access identity"
 }
 
+variable "logging_bucket" {
+  default = ""
+  description = "S3 bucket to log access logs to"
+}
+
 variable "log_include_cookies" {
   default     = "false"
   description = "Include cookies in access logs"
