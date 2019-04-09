@@ -89,6 +89,10 @@ data "aws_s3_bucket" "selected" {
 locals {
   bucket             = "${join("", compact(concat(list(var.origin_bucket), concat(list(""), aws_s3_bucket.origin.*.id))))}"
   bucket_domain_name = "${var.use_regional_s3_endpoint == "true" ? format("%s.s3-%s.amazonaws.com" , local.bucket, data.aws_s3_bucket.selected.region): format(var.bucket_domain_format, local.bucket)}"
+
+  versioning {
+    enabled                                   = true
+  }
 }
 
 resource "aws_cloudfront_distribution" "default" {
