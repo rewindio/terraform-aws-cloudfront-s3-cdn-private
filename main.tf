@@ -61,7 +61,11 @@ resource "aws_s3_bucket" "origin" {
   logging {
     target_bucket = "${var.logging_bucket}"
     target_prefix = "${module.origin_label.id}/"
-} 
+  }
+
+  versioning {
+    enabled = true
+  }
 
   cors_rule {
     allowed_headers = "${var.cors_allowed_headers}"
@@ -84,10 +88,6 @@ module "distribution_label" {
 
 data "aws_s3_bucket" "selected" {
   bucket = "${local.bucket == "" ? var.static_s3_bucket : local.bucket}"
-
-  versioning {
-    enabled                                   = true
-  }
 }
 
 locals {
