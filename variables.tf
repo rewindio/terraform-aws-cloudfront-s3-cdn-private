@@ -1,32 +1,32 @@
 variable "namespace" {
   description = "Namespace (e.g. `eg` or `cp`)"
-  type        = "string"
+  type        = string
 }
 
 variable "stage" {
   description = "Stage (e.g. `prod`, `dev`, `staging`)"
-  type        = "string"
+  type        = string
 }
 
 variable "name" {
   description = "Name  (e.g. `bastion` or `app`)"
-  type        = "string"
+  type        = string
 }
 
 variable "delimiter" {
-  type        = "string"
+  type        = string
   default     = "-"
   description = "Delimiter to be used between `namespace`, `stage`, `name` and `attributes`"
 }
 
 variable "attributes" {
-  type        = "list"
+  type        = list(any)
   default     = []
   description = "Additional attributes (e.g. `1`)"
 }
 
 variable "tags" {
-  type        = "map"
+  type        = map(string)
   default     = {}
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
 }
@@ -47,13 +47,13 @@ variable "minimum_protocol_version" {
 }
 
 variable "aliases" {
-  type        = "list"
+  type        = list(string)
   description = "List of FQDN's - Used to set the Alternate Domain Names (CNAMEs) setting on Cloudfront"
   default     = []
 }
 
 variable "use_regional_s3_endpoint" {
-  type        = "string"
+  type        = string
   description = "When set to 'true' the s3 origin_bucket will use the regional endpoint address instead of the global endpoint address"
   default     = "false"
 }
@@ -135,25 +135,25 @@ variable "forward_query_string" {
 }
 
 variable "cors_allowed_headers" {
-  type        = "list"
+  type        = list(string)
   default     = ["*"]
   description = "List of allowed headers for S3 bucket"
 }
 
 variable "cors_allowed_methods" {
-  type        = "list"
+  type        = list(string)
   default     = ["GET"]
   description = "List of allowed methods (e.g. GET, PUT, POST, DELETE, HEAD) for S3 bucket"
 }
 
 variable "cors_allowed_origins" {
-  type        = "list"
+  type        = list(string)
   default     = []
   description = "List of allowed origins (e.g. example.com, test.com) for S3 bucket"
 }
 
 variable "cors_expose_headers" {
-  type        = "list"
+  type        = list(string)
   default     = ["ETag"]
   description = "List of expose header in the response for S3 bucket"
 }
@@ -169,13 +169,13 @@ variable "forward_cookies" {
 }
 
 variable "forward_header_values" {
-  type        = "list"
+  type        = list(string)
   description = "A list of whitelisted header values to forward to the origin"
   default     = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 }
 
 variable "trusted_signer_ids" {
-  type        = "list"
+  type        = list(string)
    description = "A list of AWS account IDs that are authorized to generate signed URLs"
    default = []
 }
@@ -191,13 +191,13 @@ variable "viewer_protocol_policy" {
 }
 
 variable "allowed_methods" {
-  type        = "list"
+  type        = list(string)
   default     = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
   description = "List of allowed methods (e.g. GET, PUT, POST, DELETE, HEAD) for AWS CloudFront"
 }
 
 variable "cached_methods" {
-  type        = "list"
+  type        = list(string)
   default     = ["GET", "HEAD"]
   description = "List of cached methods (e.g. GET, PUT, POST, DELETE, HEAD)"
 }
@@ -224,7 +224,7 @@ variable "geo_restriction_type" {
 }
 
 variable "geo_restriction_locations" {
-  type = "list"
+  type = list(string)
 
   # e.g. ["US", "CA", "GB", "DE"]
   default     = []
@@ -265,6 +265,6 @@ variable "custom_error_response" {
   # https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#custom-error-response-arguments
   description = "List of one or more custom error response element maps"
 
-  type    = "list"
+  type    = list(string)
   default = []
 }
