@@ -263,8 +263,13 @@ DOC
 variable "custom_error_response" {
   # http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html#custom-error-pages-procedure
   # https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#custom-error-response-arguments
-  description = "List of one or more custom error response element maps"
+  type = list(object({
+    error_caching_min_ttl = string
+    error_code            = string
+    response_code         = string
+    response_page_path    = string
+  }))
 
-  type    = list(string)
-  default = []
+  description = "List of one or more custom error response element maps"
+  default     = []
 }

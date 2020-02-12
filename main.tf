@@ -103,7 +103,7 @@ resource "aws_cloudfront_distribution" "default" {
   price_class         = var.price_class
   depends_on          = [ aws_s3_bucket.origin ]
 
-  aliases = [ var.aliases ]
+  aliases = var.aliases
 
   origin {
     domain_name = local.bucket_domain_name
@@ -130,14 +130,14 @@ resource "aws_cloudfront_distribution" "default" {
 
     forwarded_values {
       query_string = var.forward_query_string
-      headers      = [ var.forward_header_values ]
+      headers      = var.forward_header_values
 
       cookies {
         forward = var.forward_cookies
       }
     }
 
-    trusted_signers = [ var.trusted_signer_ids ]
+    trusted_signers = var.trusted_signer_ids
 
     viewer_protocol_policy = var.viewer_protocol_policy
     default_ttl            = var.default_ttl
@@ -152,8 +152,16 @@ resource "aws_cloudfront_distribution" "default" {
     }
   }
 
-  custom_error_response = [ var.custom_error_response ]
-
+  dynamic "custom_error_response" {
+    for_each = var.custom_error_response
+    content {
+      error_caching_min_ttl = lookup(custom_error_response.value, "error_caching_min_ttl", null)
+      error_code            = custom_error_response.value.error_code
+      response_code         = lookup(custom_error_response.value, "response_code", null)
+      response_page_path    = lookup(custom_error_response.value, "response_page_path", null)
+    }
+  }
+  
   tags = module.distribution_label.tags
 }
 
