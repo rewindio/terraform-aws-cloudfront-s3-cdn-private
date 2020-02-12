@@ -20,9 +20,15 @@ variable "delimiter" {
 }
 
 variable "attributes" {
-  type        = list(any)
+  type        = list(string)
   default     = []
   description = "Additional attributes (e.g. `1`)"
+}
+
+variable "extra_origin_attributes" {
+  type        = list(string)
+  default     = ["origin"]
+  description = "Additional attributes to put onto the origin label"
 }
 
 variable "tags" {

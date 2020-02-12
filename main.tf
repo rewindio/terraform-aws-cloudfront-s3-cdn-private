@@ -4,7 +4,7 @@ module "origin_label" {
   stage      = var.stage
   name       = var.name
   delimiter  = var.delimiter
-  attributes = [ compact(concat(var.attributes, list("origin"))) ]
+  attributes = compact(concat(var.attributes, var.extra_origin_attributes))
   tags       = var.tags
 }
 
@@ -161,7 +161,7 @@ resource "aws_cloudfront_distribution" "default" {
       response_page_path    = lookup(custom_error_response.value, "response_page_path", null)
     }
   }
-  
+
   tags = module.distribution_label.tags
 }
 
