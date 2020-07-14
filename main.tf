@@ -62,6 +62,14 @@ resource "aws_s3_bucket" "origin" {
     target_bucket = var.logging_bucket
     target_prefix = "${module.origin_label.id}/"
   }
+    
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 
   versioning {
     enabled = true
