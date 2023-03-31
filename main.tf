@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "origin" {
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["arn:aws:s3:::$${bucket_name}"]
+    resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}"]
 
     principals {
       type        = "AWS"
