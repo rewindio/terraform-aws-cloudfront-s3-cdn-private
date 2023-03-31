@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "origin" {
 
 resource "aws_s3_bucket_policy" "default" {
   bucket = local.bucket
-  policy = tenplatefile(
+  policy = templatefile(
     data.aws_iam_policy_document.origin.json,
     {
       origin_path = coalesce(var.origin_path, "/")
@@ -95,7 +95,7 @@ data "aws_s3_bucket" "selected" {
 }
 
 locals {
-  bucket             = join("", compact(concat([var.origin_bucket], concat(tolist(""), aws_s3_bucket.origin.*.id))))
+  bucket             = join("", compact(concat([var.origin_bucket], concat([""], aws_s3_bucket.origin.*.id))))
   bucket_domain_name = var.use_regional_s3_endpoint == "true" ? format("%s.s3-%s.amazonaws.com", local.bucket, data.aws_s3_bucket.selected.region) : format(var.bucket_domain_format, local.bucket)
 }
 
