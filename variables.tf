@@ -106,7 +106,7 @@ variable "comment" {
 }
 
 variable "logging_bucket" {
-  default = ""
+  default     = ""
   description = "S3 bucket to log access logs to"
 }
 
@@ -182,8 +182,8 @@ variable "forward_header_values" {
 
 variable "trusted_signer_ids" {
   type        = list(string)
-   description = "A list of AWS account IDs that are authorized to generate signed URLs"
-   default = []
+  description = "A list of AWS account IDs that are authorized to generate signed URLs"
+  default     = []
 }
 
 variable "price_class" {

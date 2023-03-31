@@ -1,5 +1,5 @@
 module "origin_label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.5.0"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.8.0"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
@@ -14,38 +14,29 @@ resource "aws_cloudfront_origin_access_identity" "default" {
 
 data "aws_iam_policy_document" "origin" {
   statement {
-    actions   = [ "s3:GetObject" ]
-    resources = [ "arn:aws:s3:::$${bucket_name}$${origin_path}*" ]
+    actions   = ["s3:GetObject"]
+    resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
 
     principals {
       type        = "AWS"
-      identifiers = [ aws_cloudfront_origin_access_identity.default.iam_arn ]
+      identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
     }
   }
 
   statement {
-    actions   = [ "s3:ListBucket" ]
-    resources = [ "arn:aws:s3:::$${bucket_name}" ]
+    actions   = ["s3:ListBucket"]
+    resources = ["arn:aws:s3:::${local.bucket}"]
 
     principals {
       type        = "AWS"
-      identifiers = [ aws_cloudfront_origin_access_identity.default.iam_arn ]
+      identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
     }
-  }
-}
-
-data "template_file" "default" {
-  template = data.aws_iam_policy_document.origin.json
-
-  vars = {
-    origin_path = coalesce(var.origin_path, "/")
-    bucket_name = local.bucket
   }
 }
 
 resource "aws_s3_bucket_policy" "default" {
   bucket = local.bucket
-  policy = data.template_file.default.rendered
+  policy = data.aws_iam_policy_document.origin.json
 }
 
 data "aws_region" "current" {}
@@ -61,7 +52,7 @@ resource "aws_s3_bucket" "origin" {
     target_bucket = var.logging_bucket
     target_prefix = "${module.origin_label.id}/"
   }
-    
+
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -84,7 +75,7 @@ resource "aws_s3_bucket" "origin" {
 }
 
 module "distribution_label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.5.0"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.8.0"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
@@ -98,8 +89,8 @@ data "aws_s3_bucket" "selected" {
 }
 
 locals {
-  bucket             = join("", compact(concat(list(var.origin_bucket), concat(list(""), aws_s3_bucket.origin.*.id))))
-  bucket_domain_name = var.use_regional_s3_endpoint == "true" ? format("%s.s3-%s.amazonaws.com" , local.bucket, data.aws_s3_bucket.selected.region): format(var.bucket_domain_format, local.bucket)
+  bucket             = join("", compact(concat([var.origin_bucket], concat([""], aws_s3_bucket.origin.*.id))))
+  bucket_domain_name = var.use_regional_s3_endpoint == "true" ? format("%s.s3-%s.amazonaws.com", local.bucket, data.aws_s3_bucket.selected.region) : format(var.bucket_domain_format, local.bucket)
 }
 
 resource "aws_cloudfront_distribution" "default" {
@@ -108,7 +99,7 @@ resource "aws_cloudfront_distribution" "default" {
   comment             = var.comment
   default_root_object = var.default_root_object
   price_class         = var.price_class
-  depends_on          = [ aws_s3_bucket.origin ]
+  depends_on          = [aws_s3_bucket.origin]
 
   aliases = var.aliases
 
