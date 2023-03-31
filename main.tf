@@ -36,13 +36,7 @@ data "aws_iam_policy_document" "origin" {
 
 resource "aws_s3_bucket_policy" "default" {
   bucket = local.bucket
-  policy = template(
-    data.aws_iam_policy_document.origin.json,
-    {
-      origin_path = coalesce(var.origin_path, "/")
-      bucket_name = local.bucket
-    }
-  )
+  policy = data.aws_iam_policy_document.origin.json
 }
 
 data "aws_region" "current" {}
