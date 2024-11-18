@@ -76,7 +76,7 @@ resource "aws_s3_bucket" "origin" {
 
 # Block public access for origin S3 bucket
 resource "aws_s3_bucket_public_access_block" "backups" {
-  count  = signum(length(var.origin_bucket)) == 1 && var.block_public_access ? 0 : 1
+  count  = signum(length(var.origin_bucket)) == 1 && !var.block_public_access ? 0 : 1
   bucket = aws_s3_bucket.origin[0].id
 
   block_public_acls       = true
