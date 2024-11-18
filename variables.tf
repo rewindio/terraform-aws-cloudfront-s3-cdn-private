@@ -279,3 +279,9 @@ variable "custom_error_response" {
   description = "List of one or more custom error response element maps"
   default     = []
 }
+
+variable "block_public_access" {
+  description = "Block public access to origin S3 bucket if true"
+  type        = bool
+  default     = true
+}
