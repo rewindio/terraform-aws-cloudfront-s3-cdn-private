@@ -74,6 +74,17 @@ resource "aws_s3_bucket" "origin" {
   }
 }
 
+# Block public access for origin S3 bucket
+resource "aws_s3_bucket_public_access_block" "backups" {
+  count  = signum(length(var.origin_bucket)) == 1 && !var.block_public_access ? 0 : 1
+  bucket = aws_s3_bucket.origin[0].id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
+}
+
 module "distribution_label" {
   source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.8.0"
   namespace  = var.namespace
