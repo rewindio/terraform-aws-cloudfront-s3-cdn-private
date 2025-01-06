@@ -285,3 +285,9 @@ variable "block_public_access" {
   type        = bool
   default     = true
 }
+
+variable "create_dns_entry" {
+  description = "Create a DNS entry in Route 53 based on the domain(s) provided"
+  type        = bool
+  default     = true
+}

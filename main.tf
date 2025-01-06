@@ -175,6 +175,7 @@ resource "aws_cloudfront_distribution" "default" {
 }
 
 module "dns" {
+  count            = var.create_dns_entry ? 1 : 0
   source           = "git::https://github.com/cloudposse/terraform-aws-route53-alias.git?ref=tags/0.8.2"
   enabled          = var.enabled
   aliases          = var.aliases
