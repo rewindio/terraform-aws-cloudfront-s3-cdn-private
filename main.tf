@@ -13,6 +13,44 @@ resource "aws_cloudfront_origin_access_identity" "default" {
 }
 
 data "aws_iam_policy_document" "origin" {
+  # New OAC model for restricting CloudFront access to an S3 origin
+  # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#migrate-from-oai-to-oac
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
+
+    principals {
+      type        = "service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test = "StringLike"
+      variable = "aws:sourceArn"
+
+      values = [module.distribution_label.id]
+    }
+  }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = ["arn:aws:s3:::${local.bucket}"]
+
+    principals {
+      type        = "service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test = "StringLike"
+      variable = "aws:sourceArn"
+
+      values = [module.distribution_label.id]
+    }
+  }
+
+  # Legacy OAI definitions - keep while deploying the new access method and then remove
+  # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#migrate-from-oai-to-oac
   statement {
     actions   = ["s3:GetObject"]
     resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
