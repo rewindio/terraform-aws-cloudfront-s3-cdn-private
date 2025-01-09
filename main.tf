@@ -8,13 +8,14 @@ module "origin_label" {
   tags       = var.tags
 }
 
-resource "aws_cloudfront_origin_access_identity" "default" {
-  comment = module.distribution_label.id
+resource "aws_cloudfront_origin_access_control" "default" {
+  name                              = "cf-s3-oac"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 data "aws_iam_policy_document" "origin" {
-  # New OAC model for restricting CloudFront access to an S3 origin
-  # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#migrate-from-oai-to-oac
   statement {
     actions   = ["s3:GetObject"]
     resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
@@ -46,28 +47,6 @@ data "aws_iam_policy_document" "origin" {
       variable = "aws:sourceArn"
 
       values = [module.distribution_label.id]
-    }
-  }
-
-  # Legacy OAI definitions - keep while deploying the new access method and then remove
-  # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#migrate-from-oai-to-oac
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
-    }
-  }
-
-  statement {
-    actions   = ["s3:ListBucket"]
-    resources = ["arn:aws:s3:::${local.bucket}"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
     }
   }
 }
@@ -153,13 +132,10 @@ resource "aws_cloudfront_distribution" "default" {
   aliases = var.aliases
 
   origin {
-    domain_name = local.bucket_domain_name
-    origin_id   = module.distribution_label.id
-    origin_path = var.origin_path
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path
-    }
+    domain_name              = local.bucket_domain_name
+    origin_id                = module.distribution_label.id
+    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    origin_path              = var.origin_path
   }
 
   viewer_certificate {
