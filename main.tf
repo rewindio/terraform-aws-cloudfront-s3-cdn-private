@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "origin" {
     resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
 
     principals {
-      type        = "service"
+      type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
     }
 
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "origin" {
     resources = ["arn:aws:s3:::${local.bucket}"]
 
     principals {
-      type        = "service"
+      type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
     }
 
