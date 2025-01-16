@@ -8,10 +8,6 @@ module "origin_label" {
   tags       = var.tags
 }
 
-resource "aws_cloudfront_origin_access_identity" "default" {
-  comment = module.distribution_label.id
-}
-
 resource "aws_cloudfront_origin_access_control" "default" {
   name                              = "cf-s3-oac"
   origin_access_control_origin_type = "s3"
