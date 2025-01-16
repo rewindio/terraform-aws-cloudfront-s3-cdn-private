@@ -31,9 +31,9 @@ data "aws_iam_policy_document" "origin" {
 
     condition {
       test = "StringLike"
-      variable = "aws:sourceArn"
+      variable = "aws:SourceArn"
 
-      values = [module.distribution_label.id]
+      values = [aws_cloudfront_distribution.default.arn]
     }
   }
 
@@ -48,9 +48,9 @@ data "aws_iam_policy_document" "origin" {
 
     condition {
       test = "StringLike"
-      variable = "aws:sourceArn"
+      variable = "aws:SourceArn"
 
-      values = [module.distribution_label.id]
+      values = [aws_cloudfront_distribution.default.arn]
     }
   }
 }
