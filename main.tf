@@ -9,7 +9,7 @@ module "origin_label" {
 }
 
 resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "cf-s3-oac"
+  name                              = "${var.name}-cf-s3-oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
