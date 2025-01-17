@@ -93,13 +93,13 @@ resource "aws_s3_bucket" "origin" {
 
 # Block public access for origin S3 bucket
 resource "aws_s3_bucket_public_access_block" "backups" {
-  count  = signum(length(var.origin_bucket)) == 1 && !var.block_public_access ? 0 : 1
+  count  = signum(length(var.origin_bucket)) == 1 ? 0 : 1
   bucket = aws_s3_bucket.origin[0].id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  restrict_public_buckets = true
-  ignore_public_acls      = true
+  block_public_acls       = var.block_public_access
+  block_public_policy     = var.block_public_access
+  restrict_public_buckets = var.block_public_access
+  ignore_public_acls      = var.block_public_access
 }
 
 module "distribution_label" {
