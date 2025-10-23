@@ -16,6 +16,7 @@ resource "aws_cloudfront_origin_access_control" "default" {
 }
 
 data "aws_iam_policy_document" "origin" {
+  count = signum(length(var.origin_bucket)) == 1 ? 0 : 1
   statement {
     actions   = ["s3:GetObject"]
     resources = ["arn:aws:s3:::${local.bucket}${coalesce(var.origin_path, "/")}*"]
@@ -49,11 +50,38 @@ data "aws_iam_policy_document" "origin" {
       values = [aws_cloudfront_distribution.default.arn]
     }
   }
+
+  statement {
+    sid = "AllowSSLRequestsOnly"
+
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "s3:*"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.origin[0].arn}/*",
+      "${aws_s3_bucket.origin[0].arn}",
+    ]
+
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:SecureTransport"
+    }
+  }
 }
 
 resource "aws_s3_bucket_policy" "default" {
+  count = signum(length(var.origin_bucket)) == 1 ? 0 : 1
   bucket = local.bucket
-  policy = data.aws_iam_policy_document.origin.json
+  policy = data.aws_iam_policy_document.origin[0].json
 }
 
 data "aws_region" "current" {}
